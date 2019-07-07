@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Abstract</title>
+
+    <style>
+        body {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>Abstract</h1>
+
+    <script>
+        // Vehicle options
+        var options1 = {
+            vehicleType: "car",
+            color: "black",
+            doors: 6
+        }
+
+        var options2 = {
+            vehicleType: "truck",
+            state: "like new",
+            color: "red",
+            wheelSize: "small"
+        }
+
+        function Car(options) {
+            this.doors = options.doors || 4;
+            this.state = options.state || "brand new";
+            this.color = options.color || "silver";
+        }
+
+        Car.prototype.getDriver = function() {
+            return {
+                name: 'Daniel',
+                license: 'ASD-123'
+            }
+        }
+
+        function Truck(options) {
+            this.state = options.state || "used";
+            this.wheelSize = options.wheelSize || "large";
+            this.color = options.color || "blue";
+        }
+
+        Truck.prototype.getDriver = function() {
+            return {
+                name: 'Bruna',
+                license: 'QWE-456'
+            }
+        }
+
+        var abstractVehicleFactory = (function() {
+
+            var types = {};
+
+            return {
+                get: function(type, options) {
+                    return types[type] ? new types[type](options) : null;
+                },
+
+                set: function(type, classRef) {
+                    if (classRef.prototype.getDriver) {
+                        types[type] = classRef
+                    }
+                }
+            }
+        })();
+
+        abstractVehicleFactory.set('car', Car);
+        abstractVehicleFactory.set('truck', Truck);
+
+        var car = abstractVehicleFactory.get('car', options1);
+        var truck = abstractVehicleFactory.get('truck', options2);
+
+        console.log(car, truck);
+        console.log(car.getDriver(), truck.getDriver());
+    </script>
+</body>
+</html>

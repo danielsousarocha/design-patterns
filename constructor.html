@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Constructor</title>
+
+    <style>
+        body {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>Constructor</h1>
+
+    <script>
+        function Car(model, year, miles) {
+            this.model = model;
+            this.year = year;
+            this.miles = miles;
+            this.state = 0;
+        }
+
+        Car.prototype.toString = function() {
+            return 'The ' + this.model + ' car is from ' + this.year + ' and has done ' + this.miles + ' miles since then.';
+        }
+
+        Car.prototype.move = function() {
+            if (this.state === 0) {
+                this.state = 1;
+                return 'The ' + this.model + ' is starting to move now.';
+            }
+
+            return 'The ' + this.model + ' is moving already!';
+        }
+
+        Car.prototype.stop = function() {
+            if (this.state === 1) {
+                this.state = 0;
+                return 'The ' + this.model + ' is stopping now.';
+            }
+
+            return 'The ' + this.model + ' wasn\'t moving at all!';
+        }
+
+        var civic = new Car('Honda Civic', 2009, 20000);
+        var mondeo = new Car('Ford Mondeo', 2010, 5000);
+
+        console.log(civic.toString());
+        console.log(mondeo.toString());
+
+        console.log(civic.move());
+        console.error(civic.move());
+
+        console.log(civic.stop());
+        console.error(civic.stop());
+    </script>
+</body>
+</html>

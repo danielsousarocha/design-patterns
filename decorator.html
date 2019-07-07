@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Decorator</title>
+
+    <style>
+        body {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>Decorator</h1>
+
+    <div>
+        <label for="color">
+            Color
+            <input type="checkbox" name="color" id="color" value="color">
+        </label>
+    </div>
+
+    <div>
+        <label for="add-case">
+            Add Case
+            <input type="checkbox" name="add-case" id="add-case" value="addCase">
+        </label>
+    </div>
+
+    <div>
+        <button id="make-notebook">Make Notebook</button>
+    </div>
+
+    <script>
+        function Notebook() {
+            this.price = function() {
+                return 1000;
+            }
+
+            this.screen = function() {
+                return 11.6;
+            }
+        };
+
+        function color(device, color) {
+            var currentPrice = device.price();
+
+            device.color = color;
+
+            device.price = function() {
+                return currentPrice + 50;
+            }
+        };
+
+        function addCase(device) {
+            var currentPrice = device.price();
+
+            device.case = true;
+
+            device.price = function() {
+                return currentPrice + 100;
+            }
+        }
+
+        var basicNotebook = new Notebook();
+        var premiumNotebook = new Notebook();
+
+        color(premiumNotebook, 'Black & White');
+        addCase(premiumNotebook);
+
+        console.log(basicNotebook, basicNotebook.price());
+        console.log(premiumNotebook, premiumNotebook.price());
+
+        document.querySelector('#make-notebook').addEventListener('click', function() {
+            var notebook = new Notebook();
+            var inputs = [...document.querySelectorAll('input[type=checkbox]')];
+
+            inputs.forEach( (el, i) => (el.checked) ? window[el.value](notebook, 'red') : null );
+
+            console.log(notebook, notebook.price())
+        });
+    </script>
+</body>
+</html>

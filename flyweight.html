@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fly Weight</title>
+
+    <style>
+        body {
+            background-color: #eee;
+        }
+
+        #container {
+            width: 100%;
+            display: block;
+        }
+
+        .circle {
+            background-color: blue;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 5px;
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fly Weight</h1>
+
+    <div id="canvas"></div>
+
+    <script>
+        function Circle() {
+            this.el;
+
+            this.create = function() {
+                var el = document.createElement('div');
+                el.classList.add('circle');
+                this.el = el;
+            }
+
+            // this.swapColor = function() {
+            //     var newColor = this.el.style.backgroundColor == 'orange' ? 'blue' : 'orange';
+            //     this.el.style.backgroundColor = newColor;
+            // }
+
+            this.create();
+        }
+
+        var canvas = document.getElementById('canvas');
+
+        // Abstrai uma função que pode, ou não, ser executada.
+        // Isso evita criar essa função sempre e em todos os objetos sem necessidade
+        function swapColor(el) {
+            var newColor = el.style.backgroundColor == 'green' ? 'blue' : 'green';
+            el.style.backgroundColor = newColor;
+        }
+
+        for(var i = 0; i < 50; i++) {
+            let circle = new Circle();
+            canvas.appendChild(circle.el);
+
+            circle.el.addEventListener('click', function(e) {
+                //circle.swapColor();
+
+                swapColor(e.target); // <-- Fly Weight
+            });
+        }
+    </script>
+</body>
+</html>

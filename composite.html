@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Composite</title>
+
+    <style>
+        body {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>Composite</h1>
+
+    <div id="app"></div>
+
+    <script>
+        function File(name, extension) {
+            this.name = name;
+            this.ext = extension;
+        }
+
+        function Folder(name) {
+            Folder.number++;
+
+            this.children = [];
+            this.files = [];
+            this.name = name
+            this.number = Folder.number;
+        }
+
+        Folder.prototype.add = function(folder) {
+            if (folder instanceof Folder) return this.children.push(folder);
+
+            throw new Error('You can only add Folders with this function');
+        }
+
+        Folder.prototype.printHierarchy = function() {
+            var currFolder = this;
+            var j = i = 0;
+
+            for(; j < currFolder.files.length; j++) {
+                console.warn('  '.repeat(currFolder.number) + currFolder.files[j].name + '.' + currFolder.files[j].ext);
+            }
+
+            for(; i < currFolder.children.length; i++) {
+                console.warn('  '.repeat(currFolder.number) + currFolder.children[i].name);
+
+                if (currFolder.children[i].files.lenght > 0 || currFolder.children[i].children.length > 0) {
+                    currFolder.children[i].printHierarchy();
+                }
+            }
+        }
+
+        Folder.prototype.addFile = function(file) {
+            if (file instanceof File) return this.files.push(file);
+
+            throw new Error('You can only add files with this function');
+        }
+
+        Folder.number = 0;
+
+        var rootFolder = new Folder('rootFolder');
+        var folder2 = new Folder('folder2');
+        var folder3 = new Folder('folder3');
+        var folder4 = new Folder('folder4');
+        var folder5 = new Folder('folder5');
+        var folder6 = new Folder('folder6');
+        var folder7 = new Folder('folder7');
+        var folder8 = new Folder('folder8');
+
+        var file1 = new File('note', 'txt');
+        var file2 = new File('word', 'doc');
+        var file3 = new File('excel', 'xls');
+        var file4 = new File('site', 'html');
+
+        rootFolder.add(folder2);
+        rootFolder.add(folder3);
+        folder3.add(folder4);
+        folder4.add(folder5);
+        folder4.add(folder6);
+        folder6.add(folder7);
+        folder7.add(folder8);
+
+        rootFolder.addFile(file1);
+        folder3.addFile(file2);
+        folder3.addFile(file3);
+        folder6.addFile(file4);
+
+        console.info(rootFolder);
+
+        rootFolder.printHierarchy();
+    </script>
+</body>
+</html>

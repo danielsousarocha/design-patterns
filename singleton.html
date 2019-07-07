@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <title>Singleton</title>
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        #app {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            margin-top: 10px;
+            background-color: #eee;
+            overflow: hidden;
+
+        }
+
+        .square {
+            width: 50px;
+            height: 50px;
+            background-color: #333;
+            border: 2px solid #45a1c3;
+            display: block;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <h1>Singleton</h1>
+
+    <button id="start" autofocus>Press Start</button>
+    <div id="app" style="display: none;"></div>
+
+    <script>
+        var square = (function() {
+            var instance, el, t=0, l=0;
+
+            function init() {
+
+                function create(color) {
+
+                    var c = color || 'black';
+                    var app = document.getElementById('app');
+
+                    if (!el) {
+                        el = document.createElement('div');
+                        el.classList.add('square');
+                        el.style.top = t + 'px';
+                        el.style.left = l + 'px';
+                        el.style.backgroundColor = c;
+                        app.appendChild(el);
+                        app.style.display = 'block';
+                    }
+                }
+
+                function move(top, left) {
+
+                    if (el) {
+                        if (
+                            (t + top) < 0 ||
+                            (t + top) > 450 ||
+                            (l + left) < 0 ||
+                            (l + left) > 450
+                        ) {
+                            return false;
+                        }
+
+                        t += top;
+                        l += left;
+
+                        el.style.top = t + 'px';
+                        el.style.left = l + 'px';
+                    }
+                }
+
+                return {
+                    create: create,
+                    move: move
+                }
+            }
+
+            return {
+                getInstance: function() {
+                    if (!instance) {
+                        instance = init();
+                    }
+
+                    return instance;
+                }
+            }
+        })();
+
+        const btn = document.querySelector('#start');
+
+        function createBox() {
+            var box = square.getInstance();
+            var color;
+
+            this.style.display = 'none';
+
+            if ((Date.now() % 3) == 0) {
+                color = 'yellow';
+            }
+
+            box.create(color);
+            btn.removeEventListener('click', createBox);
+        }
+
+        btn.addEventListener('click', createBox);
+
+        document.addEventListener('keydown', function(e) {
+            var box = square.getInstance();
+
+            switch (e.keyCode) {
+                case 65:
+                case 37:
+                    box.move(0, -50);
+                    break;
+                case 87:
+                case 38:
+                    box.move(-50, 0);
+                    break;
+                case 68:
+                case 39:
+                    box.move(0, 50);
+                    break;
+                case 83:
+                case 40:
+                    box.move(50, 0);
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>

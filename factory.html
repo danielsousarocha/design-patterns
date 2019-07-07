@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Factory</title>
+
+    <style>
+        body {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>Factory</h1>
+
+    <script>
+        // Vehicle options
+        var options1 = {
+            vehicleType: "car",
+            color: "blue",
+            doors: 6
+        }
+
+        var options2 = {
+            vehicleType: "truck",
+            state: "like new",
+            color: "red",
+            wheelSize: "small"
+        }
+
+        var options3 = {
+            vehicleType: "submarine",
+            state: "rusty",
+            color: "yellow"
+        }
+
+        function Car(options) {
+            this.doors = options.doors || 4;
+            this.state = options.state || "brand new";
+            this.color = options.color || "silver";
+        }
+
+        function Truck(options) {
+            this.state = options.state || "used";
+            this.wheelSize = options.wheelSize || "large";
+            this.color = options.color || "blue";
+        }
+
+        function Submarine(options) {
+            this.state = options.state || "very old";
+            this.color = options.color || "green";
+        };
+
+        function VehicleFactory() {};
+
+        VehicleFactory.prototype.vehicleClass = Car;
+
+        VehicleFactory.prototype.createVehicle = function(op) {
+            var classesMap = {
+                'car': Car,
+                'truck': Truck,
+                'submarine': Submarine
+            }
+
+            classesMap[op.vehicleType]
+                ? this.vehicleClass = classesMap[op.vehicleType]
+                : console.warn(op.vehicleType + ' does not exists');
+
+            return new this.vehicleClass(op);
+        }
+
+        var vf = new VehicleFactory();
+
+        var car = vf.createVehicle(options1);
+        var truck = vf.createVehicle(options2);
+        var sub = vf.createVehicle(options3);
+
+        console.log(car, car instanceof Car);
+        console.log(truck, truck instanceof Truck);
+        console.log(sub, sub instanceof Submarine);
+    </script>
+</body>
+</html>

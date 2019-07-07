@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Adapter</title>
+
+    <style>
+        body {
+            background-color: #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Adapter</h1>
+
+    <script>
+        function BlockBuilder() {
+            this.type = null;
+            this.size = null;
+            this.position = null;
+        }
+
+        BlockBuilder.prototype.create = function(type, size, position) {
+            this.type = type;
+            this.size = size;
+            this.position = position;
+
+            return this;
+        };
+
+        // /\/\/\/\/\/\/\/\/\/\
+        function BuilderAdapter() {
+            var advancedBuilder = new AdvancedBuilder();
+
+            return {
+                create: function(type, size, position) {
+                    return advancedBuilder.checkAndCreate(type, size, position);
+                }
+            }
+        }
+        // \/\/\/\/\/\/\/\/\/\/
+
+        function AdvancedBuilder() {
+            this.type = null;
+            this.size = null;
+            this.position = null;
+        }
+
+        AdvancedBuilder.prototype.checkAndCreate = function(type, size, position) {
+            if (!type || !size || !position) {
+                console.warn('Arguments missing...');
+
+                return;
+            }
+
+            this.type = type;
+            this.size = size;
+            this.position = position;
+
+            return this;
+        };
+
+        // Forma alternativa para não criar um adaptador é criar a
+        // função original na nova classe com a assinatura da antiga
+        AdvancedBuilder.prototype.create = function(type, size, position) {
+            return this.checkAndCreate(type, size, position);
+        }
+
+        var builder = new BlockBuilder();
+        var block1 = builder.create('iron', '10x10', 'left');
+
+        var advancedBuilder = new AdvancedBuilder();
+        var block2 = advancedBuilder.checkAndCreate('iron', '10x10', 'left');
+
+        var adapter = new BuilderAdapter();
+        var block3 = adapter.create('iron', '10x10', 'left');
+
+        console.log(block1, block1 instanceof BlockBuilder);
+        console.log(block2, block2 instanceof AdvancedBuilder);
+        console.log(block3, block3 instanceof AdvancedBuilder);
+    </script>
+</body>
+
+</html>

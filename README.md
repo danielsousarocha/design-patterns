@@ -1,2 +1,5 @@
-# design-patterns
-Repositório listando alguns padrões de códigos para fins de estudos
+# Design Patterns
+
+Repositório listando alguns padrões de códigos.
+
+Criado apenas para fins de estudos.

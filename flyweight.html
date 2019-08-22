@@ -5,69 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Fly Weight</title>
-
-    <style>
-        body {
-            background-color: #eee;
-        }
-
-        #container {
-            width: 100%;
-            display: block;
-        }
-
-        .circle {
-            background-color: blue;
-            border-radius: 50%;
-            display: inline-block;
-            margin: 5px;
-            width: 50px;
-            height: 50px;
-        }
-    </style>
 </head>
 <body>
-    <h1>Fly Weight</h1>
-
-    <div id="canvas"></div>
+    <h1>Fly Weight 2</h1>
 
     <script>
-        function Circle() {
-            this.el;
+        Computer = function(processorName) {
+            this.isOn = false;
+            this.processor = processorName;
 
-            this.create = function() {
-                var el = document.createElement('div');
-                el.classList.add('circle');
-                this.el = el;
+            this.instanceId = ++Computer.instanceId;
+
+            // this.toggleOnState = function() {
+            //     this.isOn = !this.isOn;
+            // }
+        };
+        Computer.instanceId = 0;
+
+        Printer = function(brandName) {
+            this.isOn = false;
+            this.brand = brandName;
+
+            this.instanceId = ++Printer.instanceId;
+
+            // this.toggleOnState = function() {
+            //     this.isOn = !this.isOn;
+            // }
+        }
+        Printer.instanceId = 0;
+
+        Radio = function(colorName) {
+            this.isOn = false;
+            this.color = colorName;
+
+            this.instanceId = ++Radio.instanceId;
+
+            // this.toggleOnState = function() {
+            //     this.isOn = !this.isOn;
+            // }
+        }
+        Radio.instanceId = 0;
+
+        // Abstrai a função que liga/desliga cada periférico em uma interface, deixando o sistema mais leve
+        IToggleState = function(classInstance, propertyToToggle) {
+            if (!classInstance.hasOwnProperty(propertyToToggle)) {
+                console.warn(classInstance);
+                throw new Error(classInstance.__proto__.constructor.name + '[' + classInstance.instanceId + '] does not have the ' + propertyToToggle + ' property');
             }
 
-            // this.swapColor = function() {
-            //     var newColor = this.el.style.backgroundColor == 'orange' ? 'blue' : 'orange';
-            //     this.el.style.backgroundColor = newColor;
-            // }
-
-            this.create();
+            classInstance[propertyToToggle] = !classInstance[propertyToToggle];
         }
 
-        var canvas = document.getElementById('canvas');
+        var cp1 = new Computer('Intel');
+        var cp2 = new Computer('AMD');
+        var cp3 = new Computer('Intel');
+        var cp4 = new Computer('AMD');
 
-        // Abstrai uma função que pode, ou não, ser executada.
-        // Isso evita criar essa função sempre e em todos os objetos sem necessidade
-        function swapColor(el) {
-            var newColor = el.style.backgroundColor == 'green' ? 'blue' : 'green';
-            el.style.backgroundColor = newColor;
-        }
+        var pt1 = new Printer('Lexmark');
+        var pt2 = new Printer('HP');
+        var pt3 = new Printer('Epson');
+        var pt4 = new Printer('Samsung');
 
-        for(var i = 0; i < 50; i++) {
-            let circle = new Circle();
-            canvas.appendChild(circle.el);
+        var rd1 = new Radio('Black');
+        var rd2 = new Radio('Red');
+        var rd3 = new Radio('White');
+        var rd4 = new Radio('Blue');
 
-            circle.el.addEventListener('click', function(e) {
-                //circle.swapColor();
+        // cp3.toggleOnState();
+        // cp4.toggleOnState();
+        // pt3.toggleOnState();
+        // pt4.toggleOnState();
+        // rd3.toggleOnState();
+        // rd4.toggleOnState();
 
-                swapColor(e.target); // <-- Fly Weight
-            });
-        }
+        IToggleState(cp1, 'isOn');
+        IToggleState(cp2, 'isOn');
+        IToggleState(pt1, 'isOn');
+        IToggleState(pt2, 'isOn');
+        IToggleState(rd1, 'isOn');
+        IToggleState(rd2, 'isOn');
+
+        console.table({cp1, cp2, cp3, cp4});
+        console.table({pt1, pt2, pt3, pt4});
+        console.table({rd1, rd2, rd3, rd4});
     </script>
 </body>
 </html>

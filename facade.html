@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Facade</title>
+</head>
+<body>
+    <h1>Facade</h1>
+
+    <button id="on">Turn On</button>
+    <button id="off">Turn Off</button>
+
+    <script>
+        Television = function() {
+            this.id;
+
+            this.id = ++Television.id;
+            this.channelList = {};
+            this.isOn = false;
+
+            this.openColorTubes = function() {
+                console.log('%cPolarizing Red color', 'color: red;');
+                console.log('%cPolarizing Green color', 'color: green;');
+                console.log('%cPolarizing Blue color', 'color: blue;');
+            };
+
+            this.loadChannelList = function() {
+                console.log('Fetching channels...');
+
+                var _this = this;
+
+                    _this.channelList = {
+                        1: 'Bandeirantes',
+                        2: 'Cultura',
+                        3: 'Gazeta',
+                        4: 'Globo',
+                        5: 'MTV',
+                        6: 'Record',
+                        7: 'Record News',
+                        8: 'Rede 21',
+                        9: 'RedeTV!',
+                        10: 'SBT',
+                        11: 'TV Brasil'
+                    };
+
+                    console.table(_this.channelList);
+                    console.log('Channels loaded');
+                    this.flagOnState(true);
+            };
+
+            this.flagOnState = function(value) {
+                this.isOn = value;
+            };
+
+            this.closeColorTubes = function() {
+                console.warn('%cShutting down Red color', 'color: red;');
+                console.warn('%cShutting down Green color', 'color: green;');
+                console.warn('%cShutting down Blue color', 'color: blue;');
+            };
+
+            this.unloadChannelList = function() {
+                console.warn(this.channelList);
+                this.channelList = {};
+                console.warn(this.channelList);
+                this.flagOnState(false);
+            }
+        };
+        Television.id = 0;
+
+        TelevisionFacade = function(televisionClass) {
+
+            this.turnOn = function() {
+                if (!televisionClass.isOn) {
+                    televisionClass.openColorTubes();
+                    televisionClass.loadChannelList();
+                } else {
+                    console.warn("TV is on already...");
+                }
+            }
+
+            this.turnOff = function() {
+                if (televisionClass.isOn) {
+                    televisionClass.closeColorTubes();
+                    televisionClass.unloadChannelList();
+                } else {
+                    console.warn("TV already off...");
+                }
+            }
+        }
+
+        var tv = new TelevisionFacade(new Television());
+        console.log(tv);
+
+        // -------------------------------------------------------------------
+        document.getElementById('on').addEventListener('click', function() {
+            tv.turnOn();
+        });
+
+        document.getElementById('off').addEventListener('click', function() {
+            tv.turnOff();
+        });
+    </script>
+</body>
+</html>

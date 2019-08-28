@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Proxy</title>
+</head>
+<body>
+    <h1>Proxy</h1>
+
+    <script>
+        function Client(ip, name, username, password) {
+            this.ip = ip;
+            this.name = name;
+            this.username = username;
+            this.password = password;
+        }
+
+        Client.prototype.showIp = function() {
+            console.log(this.ip);
+        }
+
+        // --------------------------------------------
+
+        function Server() {
+            this.clients = [];
+        }
+
+        Server.prototype.queryDatabase = function() {
+            console.log('SELECT * FROM Everything');
+        }
+
+        Server.prototype.connect = function(Client) {
+            if (this.clients.indexOf(Client.ip) < 0) {
+                this.clients.push(Client.ip);
+                console.log(Client.name + ' connected');
+            }
+        }
+
+        Server.prototype.getClients = function() {
+            return this.clients;
+        }
+
+        // --------------------------------------------
+
+        function ServerProxy(Server) {
+            this.server = Server;
+        }
+
+        ServerProxy.prototype.authenticate = function(Client) {
+            if (Client.username === 'Admin' && Client.password === 'P4$$w0rd') {
+                this.server.connect(Client);
+                this.server.queryDatabase();
+            } else {
+                console.warn('Access denied for ' + Client.name + '!');
+            }
+        }
+
+        const john = new Client('10.20.0.200', 'John', 'Admin', 'P4$$w0rd');
+        const smith = new Client('10.40.10.200', 'Smith', 'Smith', 'P4$$w0rd');
+        const jane = new Client('10.30.100.200', 'Jane', 'Admin', 'P4$$w0rd');
+        const jade = new Client('10.50.50.200', 'Jade', 'Admin', 'S3cr3t');
+
+        const server = new Server();
+        const proxy = new ServerProxy(server);
+
+        proxy.authenticate(john);
+        proxy.authenticate(smith);
+        proxy.authenticate(jane);
+        proxy.authenticate(jade);
+
+        console.table(server.getClients());
+    </script>
+</body>
+</html>

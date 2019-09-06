@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chain of Responsibility</title>
+</head>
+<body>
+    <h1>Chain of Responsibility</h1>
+
+    <div id="after-pass"></div>
+
+    <script>
+        var Person = function(hasBall) {
+            this.id = ++Person.id;
+            this.hasBall = this.id === 1 ? true : false;
+            this.nextPerson = null;
+        }
+        Person.id = 0;
+
+        Person.prototype.setNextPerson = function(Person) {
+            this.nextPerson = Person;
+        }
+
+        Person.prototype.passBall = function() {
+            if (this.hasBall && this.nextPerson) {
+                this.hasBall = false;
+                this.nextPerson.hasBall = true;
+                this.finalResults();
+                this.nextPerson.passBall();
+            }
+        }
+
+        Person.prototype.finalResults = function() {
+            document.querySelector('#after-pass').innerHTML += `<p>Person ${this.id} ➡ ⚽ Person ${this.nextPerson ? this.nextPerson.id : ''}.</p>`;
+        }
+
+        var p1 = new Person();
+        var p2 = new Person();
+        var p3 = new Person();
+        var p4 = new Person();
+        var p5 = new Person();
+
+        p1.setNextPerson(p2);
+        p2.setNextPerson(p3);
+        p3.setNextPerson(p4);
+        p4.setNextPerson(p5);
+
+        // Começa a disparar a corrente
+        p1.passBall();
+    </script>
+</body>
+</html>

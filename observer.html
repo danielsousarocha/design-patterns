@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Observer</title>
+    <style>
+        *,
+        *:before,
+        *:after {
+            box-sizing: border-box;
+        }
+
+        form {
+            width: 300px;
+            padding: 10px;
+        }
+
+        input {
+            width: 100%;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        [type=submit] {
+            height: 30px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Observer</h1>
+
+    <form id ="main-form" action="" method="POST">
+        <label for="firstname">Nome</label>
+        <input type="text" name="firstname" id="firstname" autofocus>
+
+        <label for="lastname">Sobrenome</label>
+        <input type="text" name="lastname" id="lastname">
+
+        <label for="email">E-mail</label>
+        <input type="email" name="email" id="email">
+
+        <label for="phone">Telefone</label>
+        <input type="tel" name="phone" id="phone">
+
+        <input type="submit" id="submitbtn" name="submitbtn" value="Enviar">
+    </form>
+    <script>
+        // Event Class
+        var Event = function() {
+            this.eventList = {};
+        }
+
+        Event.prototype.on = function(eventName, subscriber) {
+            if (!this.eventList[eventName]) {
+                this.eventList[eventName] = [];
+            }
+
+            if (this.eventList[eventName].indexOf(subscriber) === -1) {
+                this.eventList[eventName].push(subscriber);
+            };
+        }
+
+        Event.prototype.off = function(eventName, subscriber) {
+            var eventGroup = this.eventList[eventName];
+
+            if (eventGroup) {
+                var subscriberIndex = eventGroup.indexOf(subscriber);
+
+                if (subscriberIndex > -1) {
+                    eventGroup.splice(subscriberIndex, 1);
+                }
+            }
+        }
+
+        Event.prototype.dispatch = function(eventName, eventData) {
+            var eventGroup = this.eventList[eventName];
+            if (eventGroup) {
+                eventGroup.forEach(function(subscriber) {
+                    subscriber(eventData);
+                });
+            }
+        }
+
+        var Events = new Event();
+        var errorCount = 0;
+
+        // Validation Functions
+        var resetCount = function() {
+            errorCount = 0;
+        }
+
+        var submit = function(form) {
+            var inputTags = document.getElementsByTagName('input');
+            var inputs = Array.from(inputTags, function(input) {
+                var inputData = {
+                    name: input.getAttribute('name'),
+                    type: input.getAttribute('type'),
+                    value: input.value,
+                    parentForm: form
+                };
+
+                Events.dispatch('validate', inputData);
+            });
+        }
+
+        var validate = function(input) {
+            if (!input.value) {
+                Events.dispatch('errors', input);
+            }
+
+            if (input.type === 'submit') {
+                Events.dispatch('validationEnded', input.parentForm);
+            }
+        }
+
+        var errors = function(input) {
+            errorCount++;
+        }
+
+        var validationEnded = function(form) {
+            if (errorCount === 0) {
+                alert('Success!');
+                form.reset();
+                document.getElementById('firstname').focus();
+            } else {
+                alert('Fail!');
+            }
+        }
+
+        Events.on('resetCount', resetCount);
+        Events.on('submit', submit);
+        Events.on('errors', errors);
+        Events.on('validate', validate);
+        Events.on('validationEnded', validationEnded);
+
+        document.getElementById('main-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            Events.dispatch('resetCount');
+            Events.dispatch('submit', e.target);
+        });
+    </script>
+</body>
+</html>

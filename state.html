@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>State</title>
+</head>
+
+<body>
+    <h1>State</h1>
+
+    <script>
+        var HelpTicket = function () {
+            var currentState = new Open(this);
+
+            this.id = 1;
+            this.status = null;
+
+            this.changeState = function (newState) {
+                currentState = newState;
+                currentState.execute();
+            }
+
+            this.setStatus = function (newStatus) {
+                this.status = newStatus;
+            }
+
+            this.logStatus = function () {
+                console.log('Ticket #' + this.id + ' is now ' + this.status);
+            }
+
+            this.start = function () {
+                currentState.execute();
+            }
+        }
+
+        var Open = function (Ticket) {
+            this.execute = function () {
+                Ticket.setStatus('Opened');
+                Ticket.logStatus();
+                Ticket.changeState(new HandleProgress(Ticket));
+            }
+        }
+
+        var HandleProgress = function (Ticket) {
+            this.execute = function () {
+                Ticket.setStatus('In Progress');
+                Ticket.logStatus();
+
+                setTimeout(function() {
+                    Ticket.changeState(new FinishWork(Ticket));
+                }, 2000);
+            }
+        }
+
+        var FinishWork = function (Ticket) {
+            this.execute = function () {
+                Ticket.setStatus('Finished');
+                Ticket.logStatus();
+
+                confirm('Is work done?')
+                    ? Ticket.changeState(new Close(Ticket))
+                    : Ticket.changeState(new HandleProgress(Ticket));
+            }
+        }
+
+        var Close = function (Ticket) {
+            this.execute = function () {
+                Ticket.setStatus('Closed');
+                Ticket.logStatus();
+            }
+        }
+
+        var ticket = new HelpTicket();
+        ticket.start();
+    </script>
+</body>
+
+</html>
